@@ -24,8 +24,8 @@
  * 
  * @author enk (Enk Naran)
  */
-public class HeapSort {
-
+public class HeapSort 
+{
     /**
      * This is the entry point of the application
      * 
@@ -34,8 +34,14 @@ public class HeapSort {
      */
     public static void main(String[] args) 
     {
-        // do things and stuff
+        //HeapSort <data-file-name> <num-buffers> <stat-file-name>
+        
     }
     
+    public void Sort(int[] array)
+    {
+        
+        
+    }
     
 }
