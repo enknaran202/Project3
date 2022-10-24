@@ -1,16 +1,21 @@
 /**
- * 
- */
-
-/**
  * @author EnkN
  *
  */
 public class BufferPool
 {
+    LinkedList<Buffer> pool;
+    int MAX = 0;
+    
     //Constructor(int numBuffers)
         //Basically an array of buffers
         //Will load the MAX number of buffers
+    
+    @SuppressWarnings("unchecked")
+    public BufferPool()
+    {
+        pool = new <Buffer>LinkedList();
+    }
     
     //readRecord(int indexLookingFor)
         //read a block of data that contains the index
@@ -33,6 +38,6 @@ public class BufferPool
     //seek- sets the file pointer to a specific part of a file
     //read
     //write
-    //length- tells us the number of bytes. Dividte that by 4 to get num of records
+    //length- tells us the number of bytes. Divide that by 4 to get num of records
 
 // JAVA ByteBuffer- used to read bytes into a proper format

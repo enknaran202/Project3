@@ -39,7 +39,6 @@ public class HeapSort
         String dataFileName = args[0];
         int numBuffers = Integer.parseInt(args[1]);
         String statFileName = args[1];
-
     }
 
     // Key = 0 + 4x through +1
@@ -145,7 +144,6 @@ class MaxHeap
 
     private void swap(Comparable[] heap, int curr, int last)
     {
-        // TODO Auto-generated method stub
         Comparable temp = null;
         temp = heap[curr];
         heap[curr] = heap[last];
