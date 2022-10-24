@@ -1,17 +1,65 @@
 import student.TestCase;
 
-
-public class HeapSortTest extends TestCase 
+public class HeapSortTest extends TestCase
 {
-    /**
-     * An artificial test to get initial coverage for the
-     * main method. Delete or modify this test.
-     */
-    public void testMain() 
+    private HeapSort test;
+    private int[] toSort;
+    private int[] sorted;
+
+    public void setUp()
     {
-        HeapSort dum = new HeapSort();
-        assertNotNull(dum);
-        HeapSort.main(new String[3]);
-        assertEquals(systemOut().getHistory(), ""); // check that nothing was printed out
+        toSort = new int[]
+        { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+        sorted = new int[]
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        test = new HeapSort(toSort, toSort.length, toSort.length);
     }
+
+
+    public void testHeapsort()
+    {
+        HeapSort.heapsort(toSort);
+        assertEquals(sorted, toSort);
+    }
+
+// void testHeapsize()
+// {
+// fail("Not yet implemented");
+// }
+//
+//
+//
+// void testIsLeaf()
+// {
+// fail("Not yet implemented");
+// }
+//
+//
+//
+// void testLeftchild()
+// {
+// fail("Not yet implemented");
+// }
+//
+//
+//
+// void testRightchild()
+// {
+// fail("Not yet implemented");
+// }
+//
+//
+//
+// void testParent()
+// {
+// fail("Not yet implemented");
+// }
+//
+//
+//
+// void testInsert()
+// {
+// fail("Not yet implemented");
+// }
+
 }

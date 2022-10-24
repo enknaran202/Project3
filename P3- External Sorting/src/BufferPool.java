@@ -11,12 +11,27 @@ public class BufferPool
         //Basically an array of buffers
         //Will load the MAX number of buffers
     
-    @SuppressWarnings("unchecked")
-    public BufferPool()
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public BufferPool(int MAX)
     {
         pool = new <Buffer>LinkedList();
+        this.MAX = MAX;
     }
     
+    public short get(int index)
+    {
+        // should return the block the index belongs to
+        int block = index % 1024;
+        // search through linked list
+        // if not in pool
+        // and if size of LL == MAX;
+            // remove LRU, or HEAD;
+        // get from file
+        // get from buffer
+        // return short
+        return 0;
+        
+    }
     //readRecord(int indexLookingFor)
         //read a block of data that contains the index
         // 4096 bytes - 1024 records

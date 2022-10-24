@@ -41,57 +41,47 @@ public class HeapSort
         String statFileName = args[1];
     }
 
-    // Key = 0 + 4x through +1
-    //
-// public void heapify(int[] list)
-// {
-//
-// }
-//
-//
-// public void Sort(int[] list)
-// {
-// for (int i = 0; )
-//
-// }
-
-}
-
-
-
-
-class MaxHeap
-{
-    private Comparable[] Heap; // Pointer to the heap array
+    private int[] Heap; // Pointer to the heap array
     private int size; // Maximum size of the heap
     private int n; // Number of things now in heap
 
     // Constructor supporting preloading of heap contents
-    MaxHeap(Comparable[] h, int num, int max)
+    public HeapSort(int[] toSort, int num, int max)
     {
-        Heap = h;
+        Heap = toSort;
         n = num;
         size = max;
         buildheap();
     }
 
 
+    public static void heapsort(int[] A)
+    {
+        // The heap constructor invokes the buildheap method
+        HeapSort H = new HeapSort(A, A.length, A.length);
+        for (int i = 0; i < A.length; i++)
+        { // Now sort
+            H.removemax(); // Removemax places max at end of heap
+        }
+    }
+
+
     // Return current size of the heap
-    int heapsize()
+    private int heapsize()
     {
         return n;
     }
 
 
     // Return true if pos a leaf position, false otherwise
-    boolean isLeaf(int pos)
+    private boolean isLeaf(int pos)
     {
         return (pos >= n / 2) && (pos < n);
     }
 
 
     // Return position for left child of pos
-    int leftchild(int pos)
+    private int leftchild(int pos)
     {
         if (pos >= n / 2)
         {
@@ -102,7 +92,7 @@ class MaxHeap
 
 
     // Return position for right child of pos
-    int rightchild(int pos)
+    private int rightchild(int pos)
     {
         if (pos >= (n - 1) / 2)
         {
@@ -113,7 +103,7 @@ class MaxHeap
 
 
     // Return position for parent
-    int parent(int pos)
+    private int parent(int pos)
     {
         if (pos <= 0)
         {
@@ -124,7 +114,7 @@ class MaxHeap
 
 
     // Insert val into heap
-    void insert(int key)
+    private void insert(int key)
     {
         if (n >= size)
         {
@@ -134,7 +124,7 @@ class MaxHeap
         int curr = n++;
         Heap[curr] = key; // Start at end of heap
         // Now sift up until curr's parent's key > curr's key
-        while ((curr != 0) && (Heap[curr].compareTo(Heap[parent(curr)]) > 0))
+        while ((curr != 0) && (Heap[curr] > (Heap[parent(curr)])))
         {
             swap(Heap, curr, parent(curr));
             curr = parent(curr);
@@ -142,17 +132,17 @@ class MaxHeap
     }
 
 
-    private void swap(Comparable[] heap, int curr, int last)
+    private void swap(int[] heap2, int curr, int last)
     {
-        Comparable temp = null;
-        temp = heap[curr];
-        heap[curr] = heap[last];
-        heap[last] = temp;
+        int temp = 0;
+        temp = heap2[curr];
+        heap2[curr] = heap2[last];
+        heap2[last] = temp;
     }
 
 
     // Heapify contents of Heap
-    void buildheap()
+    private void buildheap()
     {
         for (int i = n / 2 - 1; i >= 0; i--)
         {
@@ -162,7 +152,7 @@ class MaxHeap
 
 
     // Put element in its correct place
-    void siftdown(int pos)
+    private void siftdown(int pos)
     {
         if ((pos < 0) || (pos >= n))
         {
@@ -171,11 +161,11 @@ class MaxHeap
         while (!isLeaf(pos))
         {
             int j = leftchild(pos);
-            if ((j < (n - 1)) && (Heap[j].compareTo(Heap[j + 1]) < 0))
+            if ((j < (n - 1)) && (Heap[j] < (Heap[j + 1])))
             {
                 j++; // j is now index of child with greater value
             }
-            if (Heap[pos].compareTo(Heap[j]) >= 0)
+            if (Heap[pos] >= (Heap[j]))
             {
                 return;
             }
@@ -186,7 +176,7 @@ class MaxHeap
 
 
     // Remove and return maximum value
-    Comparable removemax()
+    private Comparable removemax()
     {
         if (n == 0)
         {
@@ -199,7 +189,7 @@ class MaxHeap
 
 
     // Remove and return element at specified position
-    Comparable remove(int pos)
+    private Comparable remove(int pos)
     {
         if ((pos < 0) || (pos >= n))
         {
@@ -219,7 +209,7 @@ class MaxHeap
 
 
     // Modify the value at the given position
-    void modify(int pos, Comparable newVal)
+    private void modify(int pos, int newVal)
     {
         if ((pos < 0) || (pos >= n))
         {
@@ -231,10 +221,10 @@ class MaxHeap
 
 
     // The value at pos has been changed, restore the heap property
-    void update(int pos)
+    private void update(int pos)
     {
         // If it is a big value, push it up
-        while ((pos > 0) && (Heap[pos].compareTo(Heap[parent(pos)]) > 0))
+        while ((pos > 0) && (Heap[pos] > (Heap[parent(pos)])))
         {
             swap(Heap, pos, parent(pos));
             pos = parent(pos);
