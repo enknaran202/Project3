@@ -3,20 +3,20 @@ import java.util.NoSuchElementException;
 /**
  * Linked list with access to end.
  * Able to input at the beginning and end of list.
- * Low -> node -> node -> node -> null
+ * start -> node -> node -> node -> null
  * 
- * High points to the last node in the list.
+ * end points to the last node in the list.
  * 
  * 
  * @author William Lummus (williamnl), Enk Naran (enk)
  * @version 10/1/2022
  * 
  */
-public class LinkedList<T>
+public class LinkedList<Buffer>
 {
-    private Node<T> low;
-    private Node<T> high;
-    private Node<T> cur;
+    private Node<Buffer> lru;
+    private Node<Buffer> entry;
+    private Node<Buffer> cur;
     private int size;
 
     /**
@@ -24,8 +24,8 @@ public class LinkedList<T>
      */
     public LinkedList()
     {
-        high = null;
-        low = null;
+        entry = null;
+        lru = null;
         cur = null;
         size = 0;
     }
@@ -38,22 +38,21 @@ public class LinkedList<T>
      * @param number
      *            The number to be entered into the list
      */
-    public void addLow(T input)
+    // probably don't need this
+    public void toDelete(Buffer input)
     {
         if (isEmpty())
         {
-
-            low = new Node<T>(input, null);
-            cur = low;
-            high = low;
+            lru = new Node<Buffer>(input, null);
+            cur = lru;
+            entry = lru;
             size++;
-
         }
 
         else
         {
-            low = new Node<T>(input, low);
-            cur = low;
+            lru = new Node<Buffer>(input, lru);
+            cur = lru;
             size++;
         }
     }
@@ -66,23 +65,41 @@ public class LinkedList<T>
      * @param number
      *            The number to be entered into the list
      */
-    public void addHigh(T input)
+    public void enter(Buffer input)
     {
         if (isEmpty())
         {
-            low = new Node<T>(input, null);
-            high = low;
-            cur = low;
+            lru = new Node<Buffer>(input, null);
+            entry = lru;
+            cur = lru;
             size++;
         }
         else
         {
-            high.setNext(new Node<T>(input, null));
-            high = high.next();
+            entry.setNext(new Node<Buffer>(input, null));
+            entry = entry.next();
             size++;
         }
     }
 
+    /**
+     * Deletes the node at the end of the list
+     */
+    public void deleteLRU()
+    {
+        Node temp = lru.next();
+        lru.setNext(null);
+        lru = temp;
+    }
+    
+    /**
+     * Peeks at lru
+     */
+    public Buffer checkLRU()
+    {
+        return lru.data();
+    }
+    
 
     /**
      * The size of the list
@@ -106,7 +123,7 @@ public class LinkedList<T>
      */
     public boolean isEmpty()
     {
-        return low == null;
+        return lru == null;
     }
 
 
@@ -118,13 +135,13 @@ public class LinkedList<T>
      * 
      */
     @SuppressWarnings("unchecked")
-    public T next()
+    public Buffer next()
     {
         if (!hasNext())
         {
             throw new NoSuchElementException("No nodes left in the list.");
         }
-        T toReturn = cur.data();
+        Buffer toReturn = cur.data();
         cur = cur.next();
         return toReturn;
     }
@@ -148,7 +165,7 @@ public class LinkedList<T>
      */
     public void resetCurrent()
     {
-        cur = low;
+        cur = lru;
     }
 
 
@@ -158,8 +175,8 @@ public class LinkedList<T>
      */
     public void clear()
     {
-        low = null;
-        high = null;
+        lru = null;
+        entry = null;
     }
 
 
