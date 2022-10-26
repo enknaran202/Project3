@@ -2,6 +2,11 @@
 public class Buffer
 {
 
+    public Buffer(int index, String fileName)
+    {
+        // TODO Auto-generated constructor stub
+    }
+
     public int num()
     {
         // TODO Auto-generated method stub

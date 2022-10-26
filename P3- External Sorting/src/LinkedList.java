@@ -31,31 +31,31 @@ public class LinkedList<Buffer>
     }
 
 
-    /**
-     * Enter a new number into the beginning of the list
-     * The current pointer is set to the new entry
-     * 
-     * @param number
-     *            The number to be entered into the list
-     */
-    // probably don't need this
-    public void toDelete(Buffer input)
-    {
-        if (isEmpty())
-        {
-            lru = new Node<Buffer>(input, null);
-            cur = lru;
-            entry = lru;
-            size++;
-        }
-
-        else
-        {
-            lru = new Node<Buffer>(input, lru);
-            cur = lru;
-            size++;
-        }
-    }
+//    /**
+//     * Enter a new number into the beginning of the list
+//     * The current pointer is set to the new entry
+//     * 
+//     * @param number
+//     *            The number to be entered into the list
+//     */
+//    // probably don't need this
+//    public void toDelete(Buffer input)
+//    {
+//        if (isEmpty())
+//        {
+//            lru = new Node<Buffer>(input, null);
+//            cur = lru;
+//            entry = lru;
+//            size++;
+//        }
+//
+//        else
+//        {
+//            lru = new Node<Buffer>(input, lru);
+//            cur = lru;
+//            size++;
+//        }
+//    }
 
 
     /**
@@ -87,9 +87,11 @@ public class LinkedList<Buffer>
      */
     public void deleteLRU()
     {
-        Node temp = lru.next();
+        Node<Buffer> temp = lru.next();
         lru.setNext(null);
         lru = temp;
+        cur = temp;
+        size--;
     }
     
     /**

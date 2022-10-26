@@ -38,7 +38,7 @@ public class HeapSort
         // remember to keep a copy of the original data file
         String dataFileName = args[0];
         int numBuffers = Integer.parseInt(args[1]);
-        String statFileName = args[1];
+        String statFileName = args[2];
     }
 
     private int[] Heap; // Pointer to the heap array
