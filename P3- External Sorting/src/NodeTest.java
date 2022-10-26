@@ -9,7 +9,8 @@ import student.TestCase;
  * @author Deep Datta (PID: ddeep21), Enk Naran (PID: enk)
  * 
  */
-public class NodeTest extends TestCase {
+public class NodeTest extends TestCase
+{
 
     private Node<Integer> test1;
     private Node<Integer> test2;
@@ -22,7 +23,8 @@ public class NodeTest extends TestCase {
      * Description: Sets up test Node objects to be used
      * 
      */
-    public void setUp() {
+    public void setUp()
+    {
 
         test1 = new Node<Integer>(1, null);
         test3 = new Node<Integer>(3, null);
@@ -35,7 +37,8 @@ public class NodeTest extends TestCase {
     /**
      * Description: Tests getData method
      */
-    public void testGetData() {
+    public void testGetData()
+    {
 
         assertEquals(1, ((int)test1.data()));
         assertEquals(2, ((int)test2.data()));
@@ -51,7 +54,8 @@ public class NodeTest extends TestCase {
     /**
      * Description: Tests setData method
      */
-    public void testSetData() {
+    public void testSetData()
+    {
 
         assertEquals(1, ((int)test1.data()));
         test1.setData(0);
@@ -68,7 +72,8 @@ public class NodeTest extends TestCase {
     /**
      * Description: Tests getNext method
      */
-    public void testGetNext() {
+    public void testGetNext()
+    {
 
         assertNull(test1.next());
         assertEquals(test1, test4.next());
@@ -80,7 +85,8 @@ public class NodeTest extends TestCase {
     /**
      * Description: Tests setNext method
      */
-    public void testSetNext() {
+    public void testSetNext()
+    {
 
         assertNull(test1.next());
         test1.setNext(test2);

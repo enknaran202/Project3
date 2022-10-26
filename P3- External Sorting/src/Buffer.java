@@ -1,6 +1,6 @@
 
 public class Buffer
 {
-    //read the byte
+    // read the byte
     //
 }

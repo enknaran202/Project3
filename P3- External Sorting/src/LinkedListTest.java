@@ -8,7 +8,8 @@ import student.TestCase;
  * @version 10/3/2022
  * 
  */
-public class LinkedListTest extends TestCase {
+public class LinkedListTest extends TestCase
+{
     private LinkedList list;
 
     /**
@@ -16,7 +17,8 @@ public class LinkedListTest extends TestCase {
      * The list should be
      * 1,2,3,4,5,6,7,8
      */
-    public void setUp() {
+    public void setUp()
+    {
         list = new LinkedList();
         list.addLow(1);
         list.addLow(2);
@@ -32,7 +34,8 @@ public class LinkedListTest extends TestCase {
     /**
      * Description: Tests addLow method
      */
-    public void testAddLow() {
+    public void testAddLow()
+    {
         assertEquals("12345678", list.toString());
         assertEquals(8, list.getSize());
         list.addLow(0);
@@ -50,7 +53,8 @@ public class LinkedListTest extends TestCase {
     /**
      * Description: Tests addHigh method
      */
-    public void testAddHigh() {
+    public void testAddHigh()
+    {
         assertEquals("12345678", list.toString());
         assertEquals(8, list.getSize());
         list.addHigh(0);
@@ -62,10 +66,12 @@ public class LinkedListTest extends TestCase {
         assertEquals(1, newList.getSize());
     }
 
+
     /**
      * Description: Test isEmpty method
      */
-    public void testIsEmpty() {
+    public void testIsEmpty()
+    {
         assertFalse(list.isEmpty());
 
         LinkedList emptyList = new LinkedList();
@@ -77,16 +83,18 @@ public class LinkedListTest extends TestCase {
     /**
      * Description: Test the clear method
      */
-    public void testClear() {
+    public void testClear()
+    {
         list.clear();
         assertTrue(list.isEmpty());
     }
 
 
     /**
-     * Description: Test toString method 
+     * Description: Test toString method
      */
-    public void testToString() {
+    public void testToString()
+    {
         assertEquals("12345678", list.toString());
         list.addLow(0);
         assertEquals("123456780", list.toString());
