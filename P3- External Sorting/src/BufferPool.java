@@ -83,7 +83,7 @@ public class BufferPool
 
     // validIndex
     // ensures if index is in our pool, OR in the file
-    public boolean validIndex(int index)
+    public boolean validIndex(int index, int fileSize)
     {
         // size of file
         return false;
