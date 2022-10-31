@@ -19,7 +19,9 @@ public class Buffer {
         dirty = false;
         this.data = data;
         this.num = num;
+        // need a way to get the file
     }
+    
 
 
     /**

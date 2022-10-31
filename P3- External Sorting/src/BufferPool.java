@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 /**
  * @author EnkN
  *
@@ -6,17 +9,54 @@ public class BufferPool
 {
     LinkedList<Buffer> pool;
     int MAX = 0;
-
-    // Constructor(int numBuffers)
-    // Basically an array of buffers
-    // Will load the MAX number of buffers
+    RandomAccessFile fileName;
 
     @SuppressWarnings(
     { "unchecked", "rawtypes" })
-    public BufferPool(int MAX)
+    public BufferPool(int MAX, RandomAccessFile fileName)
     {
         pool = new <Buffer> LinkedList();
         this.MAX = MAX;
+        this.fileName = fileName;
+    }
+
+
+    /**
+     * Returns the record we are looking for.
+     * 
+     * @param index
+     *            the index of the record we are looking for
+     * 
+     * @return short[]
+     *         the record we are looking for or null if it doesnt exist
+     */
+    public short[] getIndex(int index)
+    {
+        Buffer temp = null;
+        temp = find(index);
+
+        return temp.get(index);
+        // if not in pool
+        // and if size of LL == MAX;
+
+    }
+
+
+    /**
+     * Sets changes the record at the index.
+     * 
+     * @param record
+     *            the new record
+     * @param index
+     *            the index of the record to be changed
+     * @return short[]
+     *         the record we are looking for or null if it doesnt exist
+     */
+    public void setIndex(short[] record, int index)
+    {
+        Buffer temp = null;
+        temp = find(index);
+        temp.set(index, record);
     }
 
 
@@ -24,12 +64,13 @@ public class BufferPool
      * Looks in bufferpool and returns the record at the index
      * Removes the LRU if the list is full;
      * 
-     * @return short[]
+     * @param index
+     *            the index in question
+     * @return Buffer
      *         the record we are looking for or null if it doesnt exist
      */
-    public short[] get(int index, String fileName)
+    public Buffer find(int index)
     {
-        // should return the block the index belongs to
         int block = index % 1024;
         boolean found = false;
         Buffer temp = null;
@@ -45,27 +86,26 @@ public class BufferPool
         }
         if (found)
         {
-            return temp.get(index);
+            return temp;
         }
-        // if not in pool
-        // and if size of LL == MAX;
         if (pool.getSize() == this.MAX)
         // remove LRU, or HEAD;
         {
-            evict();
+            this.evict();
         }
         // get from file
         // get from buffer
-        temp = new Buffer(index, fileName);
+        temp = new Buffer(fileName, index);
         pool.enter(temp);
         // return short
-        return temp.get(index);
+        return temp;
     }
-    // readRecord(int indexLookingFor)
-    // read a block of data that contains the index
-    // 4096 bytes - 1024 records
 
 
+    /**
+     * Removes the least recently inputed buffer from the pool
+     * 
+     */
     private void evict()
     {
         if (pool.checkLRU().checkDirty() == true)
@@ -76,17 +116,22 @@ public class BufferPool
         pool.deleteLRU();
     }
 
-    // writeRecord(int theBufferToReturn, value)
-    // checks for valid index
-    //
-
 
     // validIndex
     // ensures if index is in our pool, OR in the file
-    public boolean validIndex(int index, int fileSize)
+    /**
+     * Ensures if the index is in the pool or in the file
+     * 
+     * @param index
+     *            the questionable index
+     * @param
+     * @throws IOException
+     *
+     */
+    public boolean validIndex(int index) throws IOException
     {
-        // size of file
-        return false;
+        long numRecords = fileName.length() / 4;
+        return index <= numRecords && index >= 0;
     }
 
 }
