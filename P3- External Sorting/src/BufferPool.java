@@ -3,7 +3,7 @@ import java.io.RandomAccessFile;
 
 /**
  * @author EnkN
- *
+ * !QUESTION! Hows this shit looking? Good hopefully 
  */
 public class BufferPool
 {
@@ -117,8 +117,6 @@ public class BufferPool
     }
 
 
-    // validIndex
-    // ensures if index is in our pool, OR in the file
     /**
      * Ensures if the index is in the pool or in the file
      * 
