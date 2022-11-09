@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
 import java.util.NoSuchElementException;
 import student.TestCase;
 
@@ -10,41 +12,44 @@ import student.TestCase;
  */
 public class LinkedListTest extends TestCase
 {
-    private LinkedList list;
+    private LinkedList<Integer> list;
+    private RandomAccessFile file;
 
     /**
      * Sets up the test
      * The list should be
      * 1,2,3,4,5,6,7,8
+     * @throws FileNotFoundException 
      */
-    public void setUp()
+    public void setUp() throws FileNotFoundException
     {
-        list = new LinkedList();
-        list.addLow(1);
-        list.addLow(2);
-        list.addLow(3);
-        list.addLow(4);
-        list.addLow(5);
-        list.addLow(6);
-        list.addLow(7);
-        list.addLow(8);
+        file = new RandomAccessFile("SampleInput.dat", "rw");
+        list = new LinkedList<Integer>();
+        list.enter(8);
+        list.enter(7);
+        list.enter(6);
+        list.enter(5);
+        list.enter(4);
+        list.enter(3);
+        list.enter(2);
+        list.enter(1);
     }
 
 
     /**
      * Description: Tests addLow method
      */
-    public void testAddLow()
+    public void testEnter()
     {
         assertEquals("12345678", list.toString());
         assertEquals(8, list.getSize());
-        list.addLow(0);
+        list.enter(0);
         assertEquals(9, list.getSize());
-        assertEquals("123456780", list.toString());
+        assertEquals("012345678", list.toString());
 
-        LinkedList newList = new LinkedList();
+        LinkedList<Integer> newList = new LinkedList<Integer>();
         assertEquals(0, newList.getSize());
-        newList.addLow(0);
+        newList.enter(0);
         assertEquals(1, newList.getSize());
 
     }
@@ -53,17 +58,13 @@ public class LinkedListTest extends TestCase
     /**
      * Description: Tests addHigh method
      */
-    public void testAddHigh()
+    public void testDeleteLRU()
     {
         assertEquals("12345678", list.toString());
         assertEquals(8, list.getSize());
-        list.addHigh(0);
-        assertEquals(9, list.getSize());
-        assertEquals("012345678", list.toString());
-        LinkedList newList = new LinkedList();
-        assertEquals(0, newList.getSize());
-        newList.addHigh(0);
-        assertEquals(1, newList.getSize());
+        list.deleteLRU();
+        assertEquals(7, list.getSize());
+        assertEquals("1234567", list.toString());
     }
 
 
@@ -74,7 +75,7 @@ public class LinkedListTest extends TestCase
     {
         assertFalse(list.isEmpty());
 
-        LinkedList emptyList = new LinkedList();
+        LinkedList<Buffer> emptyList = new LinkedList<Buffer>();
         assertTrue(emptyList.isEmpty());
 
     }
@@ -88,6 +89,38 @@ public class LinkedListTest extends TestCase
         list.clear();
         assertTrue(list.isEmpty());
     }
+    
+    /**
+     * Description: Test the clear method
+     */
+    public void testCheckLRU()
+    {
+        assertEquals("8",list.checkLRU().toString());
+    }
+    
+    /**
+     * Description: Test the clear method
+     */
+    public void testNext()
+    {
+        assertEquals("8",list.next().toString());
+        assertEquals("7",list.next().toString());
+        assertEquals("6",list.next().toString());
+        assertEquals("5",list.next().toString());
+        assertEquals("4",list.next().toString());
+        assertEquals("3",list.next().toString());
+        assertEquals("2",list.next().toString());
+        assertEquals("1",list.next().toString());
+        Exception exception = null;
+        try {
+            list.next();
+        }
+        catch (Exception e) {
+            exception = e;
+        }
+        assertTrue("No nodes left in the list.",
+            exception instanceof NoSuchElementException);
+    }
 
 
     /**
@@ -96,10 +129,10 @@ public class LinkedListTest extends TestCase
     public void testToString()
     {
         assertEquals("12345678", list.toString());
-        list.addLow(0);
-        assertEquals("123456780", list.toString());
-        list.addHigh(9);
-        assertEquals("9123456780", list.toString());
+        list.enter(0);
+        assertEquals("012345678", list.toString());
+        list.enter(9);
+        assertEquals("9012345678", list.toString());
         list.clear();
         assertEquals("", list.toString());
     }

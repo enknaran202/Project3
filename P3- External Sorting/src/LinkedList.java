@@ -12,11 +12,11 @@ import java.util.NoSuchElementException;
  * @version 10/1/2022
  * 
  */
-public class LinkedList<Buffer>
+public class LinkedList<T>
 {
-    private Node<Buffer> lru;
-    private Node<Buffer> entry;
-    private Node<Buffer> cur;
+    private Node<T> lru;
+    private Node<T> entry;
+    private Node<T> cur;
     private int size;
 
     /**
@@ -65,18 +65,18 @@ public class LinkedList<Buffer>
      * @param number
      *            The number to be entered into the list
      */
-    public void enter(Buffer input)
+    public void enter(T input)
     {
         if (isEmpty())
         {
-            lru = new Node<Buffer>(input, null);
+            lru = new Node<T>(input, null);
             entry = lru;
             cur = lru;
             size++;
         }
         else
         {
-            entry.setNext(new Node<Buffer>(input, null));
+            entry.setNext(new Node<T>(input, null));
             entry = entry.next();
             size++;
         }
@@ -87,7 +87,7 @@ public class LinkedList<Buffer>
      */
     public void deleteLRU()
     {
-        Node<Buffer> temp = lru.next();
+        Node<T> temp = lru.next();
         lru.setNext(null);
         lru = temp;
         cur = temp;
@@ -97,7 +97,7 @@ public class LinkedList<Buffer>
     /**
      * Peeks at lru
      */
-    public Buffer checkLRU()
+    public T checkLRU()
     {
         return lru.data();
     }
@@ -137,13 +137,13 @@ public class LinkedList<Buffer>
      * 
      */
     @SuppressWarnings("unchecked")
-    public Buffer next()
+    public T next()
     {
         if (!hasNext())
         {
             throw new NoSuchElementException("No nodes left in the list.");
         }
-        Buffer toReturn = cur.data();
+        T toReturn = cur.data();
         cur = cur.next();
         return toReturn;
     }

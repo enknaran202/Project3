@@ -1,7 +1,7 @@
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 
 /**
  * Buffer Class
@@ -9,19 +9,108 @@ import java.nio.ShortBuffer;
  * @author William Lummus (williamnl)
  * @version 2022.10.23
  */
-public class Buffer {
+public class Buffer
+{
 
-    public byte[] data;
-    public Boolean dirty;
-    public int num;
+    private byte[] data;
+    private Boolean dirty;
+    private int num; // block number
+    private RandomAccessFile disk;
 
-    public Buffer(RandomAccessFile file, int num) {
+    /**
+     * Constructor
+     * 
+     * @param file
+     *            file input
+     * @param index
+     *            index
+     */
+    public Buffer(RandomAccessFile file, int index)
+    {
         dirty = false;
-        this.data = data;
-        this.num = num;
-        // need a way to get the file
+        num = index / 1024; // double check number
+        this.data = this.read2(num);
+        this.disk = file;
     }
-    
+
+
+    /**
+     * 
+     * @param d
+     * @return
+     */
+    public byte[] read2(int blockNumber)
+    {
+        int startingByteIndex = 4096 * blockNumber;
+
+        data = new byte[4096];
+        try
+        {
+            if (disk != null)
+            {
+                disk.seek(startingByteIndex);
+                disk.read(data);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        dirty = false;
+
+        return data;
+    }
+
+
+    /**
+     * Reads buffer from file
+     * 
+     * Probably don't need this anymore
+     * 
+     * @param b
+     *            byte array
+     * @param offset
+     *            offset
+     * @param length
+     *            length
+     * @return data in buffer
+     */
+    public byte[] read(int recordNumber)
+    { // buffer pool?
+        int startingByteIndex = 4 * recordNumber;
+
+        data = new byte[4];
+        try
+        {
+            if (disk != null)
+            {
+                disk.seek(startingByteIndex);
+                disk.read(data);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        dirty = false;
+
+        return data;
+    }
+
+
+    /**
+     * Writes buffer back into file
+     * 
+     * @throws IOException
+     */
+    public void writeToFile() throws IOException
+    {
+        if (dirty)
+        {
+            disk.write(data, num * 4096, 4096);
+            dirty = false;
+        }
+    }
 
 
     /**
@@ -29,7 +118,8 @@ public class Buffer {
      * 
      * @return num
      */
-    public int num() {
+    public int num()
+    {
         return num;
     }
 
@@ -39,7 +129,8 @@ public class Buffer {
      * 
      * @return dirty
      */
-    public boolean checkDirty() {
+    public boolean checkDirty()
+    {
         return dirty;
     }
 
@@ -47,7 +138,8 @@ public class Buffer {
     /**
      * Makes a buffer dirty.
      */
-    public void makeDirty() {
+    public void makeDirty()
+    {
         dirty = true;
     }
 
@@ -59,18 +151,27 @@ public class Buffer {
      *            index of byte
      * @return byte
      */
-    public short[] get(int index) {
-        byte[] toReturn = new byte[4];
+    public short[] get(int index)
+    { // check in range
 
-        for (int i = index; i < 4; i++) {
-            toReturn[i] = data[(index * 4) + i];
-        }
-        short[] shorts = new short[2];
-
+        // !Changed! localIndex is required to be in range
+        int localIndex = index % 1024;
         // use java bytebuffer to convert to short
-        ShortBuffer s1 = ByteBuffer.wrap(toReturn).order(
-            ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts);
-        return (s1.array());
+
+        ByteBuffer toReturn = ByteBuffer.allocate(4);
+        toReturn.order(ByteOrder.BIG_ENDIAN);
+        toReturn.put(data[(localIndex * 4)]);
+        toReturn.put(data[(localIndex * 4) + 1]);
+        toReturn.put(data[(localIndex * 4) + 2]);
+        toReturn.put(data[(localIndex * 4) + 3]);
+
+        short[] s1 = new short[2];
+
+        toReturn.position(0);
+        s1[0] = toReturn.getShort();
+        s1[1] = toReturn.getShort();
+
+        return s1;
     }
 
 
@@ -79,25 +180,33 @@ public class Buffer {
      * 
      * @param index
      *            index of setting
-     * @param byt
-     *            byte
+     * @param shorts
+     *            short array
      */
-    public void set(int index, short[] shorts) {
-        if (!dirty) {
+    public void set(int index, short[] shorts)
+    {
+        //!Changed! index and if to local index
+        int localIndex = index % 1024;
+        if (!dirty)
+        {
             dirty = true;
         }
 
         // reverse bytebuffer to make an array of bytes of size 4
         byte[] toSet = new byte[4];
-        ByteBuffer.wrap(toSet).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer()
-            .put(shorts);
+
+        ByteBuffer myBuffer = ByteBuffer.allocate(4);
+        myBuffer.putShort(shorts[0]);
+        myBuffer.putShort(shorts[1]);
+
+        toSet = myBuffer.array();
 
         // replace the record with new record we made here^
-        for (int i = 0; i < 4; i++) {
-            data[index] = toSet[i];
+        for (int i = 0; i < 4; i++)
+        {
+            data[localIndex * 4 + i] = toSet[i];
         }
 
     }
 
 }
-

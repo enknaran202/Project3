@@ -4,6 +4,7 @@ import java.io.RandomAccessFile;
 /**
  * @author EnkN
  * !QUESTION! Hows this shit looking? Good hopefully 
+ * !CHANGE!   Change the methods that take index. Calculate local index
  */
 public class BufferPool
 {
@@ -11,26 +12,26 @@ public class BufferPool
     int MAX = 0;
     RandomAccessFile fileName;
 
-    @SuppressWarnings(
-    { "unchecked", "rawtypes" })
     public BufferPool(int MAX, RandomAccessFile fileName)
     {
-        pool = new <Buffer> LinkedList();
+        pool = new LinkedList<Buffer>();
         this.MAX = MAX;
         this.fileName = fileName;
     }
 
-
+ 
     /**
-     * Returns the record we are looking for.
+     * Retrieves index of record from bufferpool if it exists
+     * Retrieves from file if it doesnt exist
      * 
      * @param index
      *            the index of the record we are looking for
      * 
      * @return short[]
-     *         the record we are looking for or null if it doesnt exist
+     *         the record we are looking for or null if it doesn't exist
+     * @throws IOException 
      */
-    public short[] getIndex(int index)
+    public short[] getIndex(int index) throws IOException
     {
         Buffer temp = null;
         temp = find(index);
@@ -43,7 +44,9 @@ public class BufferPool
 
 
     /**
-     * Sets changes the record at the index.
+     * Sets changes the record at the index. 
+     * Looks in pool first.
+     * Gets the buffer from the file if it doesnt exist in pool
      * 
      * @param record
      *            the new record
@@ -51,8 +54,9 @@ public class BufferPool
      *            the index of the record to be changed
      * @return short[]
      *         the record we are looking for or null if it doesnt exist
+     * @throws IOException 
      */
-    public void setIndex(short[] record, int index)
+    public void setIndex(short[] record, int index) throws IOException
     {
         Buffer temp = null;
         temp = find(index);
@@ -68,10 +72,12 @@ public class BufferPool
      *            the index in question
      * @return Buffer
      *         the record we are looking for or null if it doesnt exist
+     * @throws IOException 
      */
-    public Buffer find(int index)
+    public Buffer find(int index) throws IOException
     {
-        int block = index % 1024;
+        // converts index to appropriate block
+        int block = index / 1024;
         boolean found = false;
         Buffer temp = null;
         pool.resetCurrent();
@@ -104,14 +110,16 @@ public class BufferPool
 
     /**
      * Removes the least recently inputed buffer from the pool
+     * @throws IOException 
      * 
      */
-    private void evict()
+    private void evict() throws IOException
     {
         if (pool.checkLRU().checkDirty() == true)
         {
             // write the block to the buffer
             // should call a buffer method
+            pool.checkLRU().writeToFile();
         }
         pool.deleteLRU();
     }
@@ -131,8 +139,10 @@ public class BufferPool
         long numRecords = fileName.length() / 4;
         return index <= numRecords && index >= 0;
     }
-
 }
+
+// FOR TESTING
+
 
 // JAVA RandomAccessFile- used to read the file a block at a time
 // seek- sets the file pointer to a specific part of a file
