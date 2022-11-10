@@ -19,10 +19,10 @@ public class HeapSortTest extends TestCase
     }
     public void testMain() throws Exception
     {
-        new ByteFileGenerator().generate(10*1024);
-        HeapSort.main(new String[] {"p3_input_sample.txt", "5", "stats"});
+        new ByteFileGenerator().generate(1024);
+        HeapSort.main(new String[] {"p3_input_sample.txt", "2", "stats"});
         
-        assertEquals(true, new CheckFile().checkFile("SampleInput.dat"));
+        assertEquals(true, new CheckFile().checkFile("p3_input_sample.txt"));
     }
     
 }

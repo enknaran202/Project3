@@ -60,43 +60,6 @@ public class Buffer
 
 
     /**
-     * Reads buffer from file
-     * 
-     * Probably don't need this anymore
-     * 
-     * @param b
-     *            byte array
-     * @param offset
-     *            offset
-     * @param length
-     *            length
-     * @return data in buffer
-     */
-    public byte[] read(int recordNumber)
-    { // buffer pool?
-
-        int startingByteIndex = 4 * recordNumber;
-
-        data = new byte[4096];
-        try
-        {
-            if (disk != null)
-            {
-                disk.seek(startingByteIndex);
-                disk.read(data);
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        dirty = false;
-
-        return data;
-    }
-
-
-    /**
      * Writes buffer back into file
      * 
      * @throws IOException

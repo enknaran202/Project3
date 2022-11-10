@@ -127,6 +127,28 @@ public class BufferPool
         pool.deleteLRU();
     }
 
+
+    /**
+     * Removes the least recently inputed buffer from the pool
+     * 
+     * @throws IOException
+     * 
+     */
+    public void flush() throws IOException
+    {
+        do
+        {
+            if (pool.checkLRU().checkDirty() == true)
+            {
+                // write the block to the buffer
+                // should call a buffer method
+                pool.checkLRU().writeToFile();
+            }
+            pool.deleteLRU();
+        }
+        while (pool.hasNext());
+    }
+
 // /**
 // * Ensures if the index is in the pool or in the file
 // *
