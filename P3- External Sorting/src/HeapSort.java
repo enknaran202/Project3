@@ -135,7 +135,7 @@ public class HeapSort
             return new short[]
             { -1, 0 };
         } // Removing from empty heap
-        System.out.println(" Before: 0 " + pool.getIndex(0)[0] + " End of List " + pool.getIndex(n - 1)[0] );
+        //System.out.println(" Before: 0 " + pool.getIndex(0)[0] + " End of List " + pool.getIndex(n - 1)[0] );
         swap(0, --n); // Swap maximum with last value
         //System.out.println(" After "
         //    + ": 0 " + pool.getIndex(0)[0] + " End of List " + pool.getIndex(n)[0] );
