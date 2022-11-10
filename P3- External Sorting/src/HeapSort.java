@@ -47,12 +47,10 @@ public class HeapSort
         int numBuffers = Integer.parseInt(args[1]);
         String statFileName = args[2];
         RandomAccessFile file =  new RandomAccessFile(dataFileName, "rw");
-        HeapSort heap = new HeapSort(file, numBuffers);
         HeapSort.heapSort(file, numBuffers);
     }
 
     private RandomAccessFile Heap; // Pointer to the heap array
-    private int size; // Maximum size of the heap
     private int n; // Number of things now in heap
     private BufferPool pool;
 
@@ -62,10 +60,10 @@ public class HeapSort
         // how do i use RAF constructor? It requires a file object
 
         Heap = file;
-        n = (int)Heap.length() / 4; // !Change! to records
-        size = (int)Heap.length() / 4;
+        n = (int)Heap.length() / 4; // !Changed! to records
         pool = new BufferPool(max, Heap);
         buildheap();
+        
     }
 
 
@@ -77,6 +75,7 @@ public class HeapSort
         { // Now sort
             H.removemax(); // Removemax places max at end of heap
         }
+        
     }
 
 

@@ -4,6 +4,7 @@
 //Test Heapsort methods?
 // Only if the main test doesnt cover
 
+import java.io.IOException;
 import student.TestCase;
 
 public class HeapSortTest extends TestCase
@@ -14,9 +15,14 @@ public class HeapSortTest extends TestCase
 
     public void setUp()
     {
-        toSort = new int[]
-        { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
-        sorted = new int[]
-        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-        test = new HeapSort(toSort, toSort.length, toSort.length);
+        
     }
+    public void testMain() throws Exception
+    {
+        new ByteFileGenerator().generate(10*1024);
+        HeapSort.main(new String[] {"p3_input_sample.txt", "5", "stats"});
+        
+        assertEquals(true, new CheckFile().checkFile("SampleInput.dat"));
+    }
+    
+}

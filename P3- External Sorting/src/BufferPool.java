@@ -3,8 +3,8 @@ import java.io.RandomAccessFile;
 
 /**
  * @author EnkN
- * !QUESTION! Hows this shit looking? Good hopefully 
- * !CHANGE!   Change the methods that take index. Calculate local index
+ *         !QUESTION! Hows this shit looking? Good hopefully
+ *         !CHANGE! Change the methods that take index. Calculate local index
  */
 public class BufferPool
 {
@@ -19,7 +19,7 @@ public class BufferPool
         this.fileName = fileName;
     }
 
- 
+
     /**
      * Retrieves index of record from bufferpool if it exists
      * Retrieves from file if it doesnt exist
@@ -29,7 +29,7 @@ public class BufferPool
      * 
      * @return short[]
      *         the record we are looking for or null if it doesn't exist
-     * @throws IOException 
+     * @throws IOException
      */
     public short[] getIndex(int index) throws IOException
     {
@@ -44,7 +44,7 @@ public class BufferPool
 
 
     /**
-     * Sets changes the record at the index. 
+     * Sets changes the record at the index.
      * Looks in pool first.
      * Gets the buffer from the file if it doesnt exist in pool
      * 
@@ -54,7 +54,7 @@ public class BufferPool
      *            the index of the record to be changed
      * @return short[]
      *         the record we are looking for or null if it doesnt exist
-     * @throws IOException 
+     * @throws IOException
      */
     public void setIndex(short[] record, int index) throws IOException
     {
@@ -66,13 +66,14 @@ public class BufferPool
 
     /**
      * Looks in bufferpool and returns the record at the index
-     * Removes the LRU if the list is full;
+     * Removes the LRU if the list is full
+     * And creates a new buffer containing the record in question
      * 
      * @param index
      *            the index in question
      * @return Buffer
      *         the record we are looking for or null if it doesnt exist
-     * @throws IOException 
+     * @throws IOException
      */
     public Buffer find(int index) throws IOException
     {
@@ -98,6 +99,7 @@ public class BufferPool
         // remove LRU, or HEAD;
         {
             this.evict();
+            // System.out.println("Looking for index " + index);
         }
         // get from file
         // get from buffer
@@ -110,7 +112,8 @@ public class BufferPool
 
     /**
      * Removes the least recently inputed buffer from the pool
-     * @throws IOException 
+     * 
+     * @throws IOException
      * 
      */
     private void evict() throws IOException
@@ -124,25 +127,23 @@ public class BufferPool
         pool.deleteLRU();
     }
 
-
-    /**
-     * Ensures if the index is in the pool or in the file
-     * 
-     * @param index
-     *            the questionable index
-     * @param
-     * @throws IOException
-     *
-     */
-    public boolean validIndex(int index) throws IOException
-    {
-        long numRecords = fileName.length() / 4;
-        return index <= numRecords && index >= 0;
-    }
+// /**
+// * Ensures if the index is in the pool or in the file
+// *
+// * @param index
+// * the questionable index
+// * @param
+// * @throws IOException
+// *
+// */
+// public boolean validIndex(int index) throws IOException
+// {
+// long numRecords = fileName.length() / 4;
+// return index <= numRecords && index >= 0;
+// }
 }
 
 // FOR TESTING
-
 
 // JAVA RandomAccessFile- used to read the file a block at a time
 // seek- sets the file pointer to a specific part of a file

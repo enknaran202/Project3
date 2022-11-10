@@ -29,8 +29,8 @@ public class Buffer
     {
         dirty = false;
         num = index / 1024; // double check number
-        this.data = this.read2(num);
         this.disk = file;
+        this.data = this.read2(num);
     }
 
 
@@ -46,11 +46,8 @@ public class Buffer
         data = new byte[4096];
         try
         {
-            if (disk != null)
-            {
-                disk.seek(startingByteIndex);
-                disk.read(data);
-            }
+            disk.seek(startingByteIndex);
+            disk.read(data);
         }
         catch (IOException e)
         {
@@ -77,9 +74,10 @@ public class Buffer
      */
     public byte[] read(int recordNumber)
     { // buffer pool?
+
         int startingByteIndex = 4 * recordNumber;
 
-        data = new byte[4];
+        data = new byte[4096];
         try
         {
             if (disk != null)
@@ -107,7 +105,11 @@ public class Buffer
     {
         if (dirty)
         {
-            disk.write(data, num * 4096, 4096);
+// System.out.println("Index 1 of buffer " + this.data[1]);
+// System.out.println("Block of buffer " + this.num);
+// System.out.println("Size of disk" + this.disk.length());
+            disk.seek(num * 4096);
+            disk.write(data);
             dirty = false;
         }
     }
@@ -185,7 +187,7 @@ public class Buffer
      */
     public void set(int index, short[] shorts)
     {
-        //!Changed! index and if to local index
+        // !Changed! index and if to local index
         int localIndex = index % 1024;
         if (!dirty)
         {
