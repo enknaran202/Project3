@@ -16,6 +16,7 @@ public class Buffer
     private Boolean dirty;
     private int num; // block number
     private RandomAccessFile disk;
+    private StatsOutput stats;
 
     /**
      * Constructor
@@ -25,8 +26,9 @@ public class Buffer
      * @param index
      *            index
      */
-    public Buffer(RandomAccessFile file, int index)
+    public Buffer(RandomAccessFile file, int index, StatsOutput stts)
     {
+        stats = stts;
         dirty = false;
         num = index / 1024; // double check number
         this.disk = file;
@@ -55,6 +57,7 @@ public class Buffer
         }
         dirty = false;
 
+        stats.incReads();
         return data;
     }
 
@@ -73,6 +76,7 @@ public class Buffer
 // System.out.println("Size of disk" + this.disk.length());
             disk.seek(num * 4096);
             disk.write(data);
+            stats.incWrites();
             dirty = false;
         }
     }

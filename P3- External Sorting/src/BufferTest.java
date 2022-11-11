@@ -15,6 +15,7 @@ public class BufferTest extends TestCase {
 
     private Buffer buffer;
     private byte[] bytes;
+    private StatsOutput stats;
 
     /**
      * Sets up test cases
@@ -24,8 +25,9 @@ public class BufferTest extends TestCase {
      */
     public void setUp() throws FileNotFoundException {
         File file = new File("4096Bytes.txt");
+        stats = new StatsOutput();
         RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        buffer = new Buffer(raf, 4096);
+        buffer = new Buffer(raf, 4096, stats);
         bytes = new byte[4];
         byte zero = 01;
         byte one = 23;

@@ -11,12 +11,14 @@ public class BufferPool
     LinkedList<Buffer> pool;
     int MAX = 0;
     RandomAccessFile fileName;
+    StatsOutput stats;
 
-    public BufferPool(int MAX, RandomAccessFile fileName)
+    public BufferPool(int MAX, RandomAccessFile fileName, StatsOutput stts)
     {
         pool = new LinkedList<Buffer>();
         this.MAX = MAX;
         this.fileName = fileName;
+        stats = stts;
     }
 
 
@@ -93,8 +95,10 @@ public class BufferPool
         }
         if (found)
         {
+            stats.incHits();
             return temp;
         }
+        stats.incMisses();
         if (pool.getSize() == this.MAX)
         // remove LRU, or HEAD;
         {
@@ -103,9 +107,11 @@ public class BufferPool
         }
         // get from file
         // get from buffer
-        temp = new Buffer(fileName, index);
+        
+        temp = new Buffer(fileName, index, stats);
         pool.enter(temp);
         // return short
+        
         return temp;
     }
 
@@ -149,6 +155,42 @@ public class BufferPool
         while (pool.hasNext());
     }
 
+
+    /**
+     * Removes the least recently inputed buffer from the pool
+     * 
+     * @throws IOException
+     * 
+     */
+    public void printOutput() throws IOException
+    {
+        String output = "";
+        short[] record;
+        int j = 0;
+        for (int i = 0; i < (fileName.length() / 4); i += 1024)
+        {
+            if (j == 8)
+            {
+                System.out.println(output);
+                output = "";
+                j = 0;
+            }
+            record = getIndex(i);
+            for (int k = 0; k < record.length; k++)
+            {
+                output += record[k] + " ";
+            }
+            j++;
+        }
+        System.out.println(output);
+    }
+// for (int j = 0; j < 8; j++)
+// {
+// record = getIndex(i);
+// for (int k = 0; k < record.length; k++)
+// {
+// output += record[k] + " ";
+// i += 1024;
 // /**
 // * Ensures if the index is in the pool or in the file
 // *

@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 
 // On my honor:
@@ -45,21 +46,34 @@ public class HeapSort
         // remember to keep a copy of the original data file
         String dataFileName = args[0];
         int numBuffers = Integer.parseInt(args[1]);
-        String statFileName = args[2];
+        StatsOutput stats = new StatsOutput();
+        stats.setFileName(args[2]);
+
         RandomAccessFile file = new RandomAccessFile(dataFileName, "rw");
-        HeapSort heapSort = new HeapSort(file, numBuffers);
+        BufferPool pool = new BufferPool(numBuffers, file, stats);
+
+        long beginTime = System.currentTimeMillis();
+        HeapSort heapSort = new HeapSort(file, pool, stats);
         heapSort.heapSort();
+        stats.setTime(System.currentTimeMillis() - beginTime);
+
+        pool.printOutput();
+        PrintWriter output = new PrintWriter(args[2]);
+        output.println(stats.output());
+        output.close();
     }
 
     private int n; // Number of things now in heap
     private BufferPool pool;
     private int originalSize;
+    private StatsOutput stats;
 
     // Constructor supporting preloading of heap contents
-    public HeapSort(RandomAccessFile file, int max) throws IOException
+    public HeapSort(RandomAccessFile file, BufferPool inPool, StatsOutput stts)
+        throws IOException
     {
         n = (int)file.length() / 4; // !Changed! to records
-        pool = new BufferPool(max, file);
+        pool = inPool;
         originalSize = n;
         buildheap();
     }
@@ -68,7 +82,7 @@ public class HeapSort
     public void heapSort() throws IOException
     {
         // The heap constructor invokes the buildheap method
-       // HeapSort H = new HeapSort(A, max);
+        // HeapSort H = new HeapSort(A, max);
         for (int i = 0; i < originalSize; i++)
         { // Now sort
             removemax(); // Removemax places max at end of heap
@@ -87,7 +101,7 @@ public class HeapSort
         pool.setIndex(temp2, first);
         // pool2[last] = temp;
         pool.setIndex(temp, second);
-        
+
     }
 
 
@@ -103,7 +117,7 @@ public class HeapSort
 
 
     // Put element in its correct place
-    // alg 2    
+    // alg 2
     private void siftdown(int pos) throws IOException
     {
         if ((pos < 0) || (pos >= n))
@@ -113,7 +127,8 @@ public class HeapSort
         while (!isLeaf(pos))
         {
             int j = leftchild(pos);
-            if ((j < (n - 1)) && (pool.getIndex(j)[0] < pool.getIndex(j + 1)[0]))
+            if ((j < (n - 1)) && (pool.getIndex(j)[0] < pool.getIndex(j
+                + 1)[0]))
             {
                 j++; // j is now index of child with greater value
             }
@@ -135,62 +150,17 @@ public class HeapSort
             return new short[]
             { -1, 0 };
         } // Removing from empty heap
-        //System.out.println(" Before: 0 " + pool.getIndex(0)[0] + " End of List " + pool.getIndex(n - 1)[0] );
+          // System.out.println(" Before: 0 " + pool.getIndex(0)[0] + " End of
+          // List " + pool.getIndex(n - 1)[0] );
         swap(0, --n); // Swap maximum with last value
-        //System.out.println(" After "
-        //    + ": 0 " + pool.getIndex(0)[0] + " End of List " + pool.getIndex(n)[0] );
+        // System.out.println(" After "
+        // + ": 0 " + pool.getIndex(0)[0] + " End of List " +
+        // pool.getIndex(n)[0] );
         siftdown(0); // Put new heap root val in correct place
         return pool.getIndex(n);
     }
 
 
-    // Remove and return element at specified position
-    private short[] remove(int pos) throws IOException
-    {
-        if ((pos < 0) || (pos >= n))
-        {
-            return new short[]
-            { -1, 0 };
-        } // Illegal heap position
-        if (pos == (n - 1))
-        {
-            n--;
-        } // Last element, no work to be done
-        else
-        {
-            swap(pos, --n); // Swap with last value
-            update(pos);
-        }
-        return pool.getIndex(n);
-    }
-
-
-    // Modify the value at the given position
-    private void modify(int pos, int newVal) throws IOException
-    {
-        if ((pos < 0) || (pos >= n))
-        {
-            return;
-        } // Illegal heap position
-          // Heap[pos] = newVal;
-        update(pos);
-    }
-
-
-    // The value at pos has been changed, restore the heap property
-    private void update(int pos) throws IOException
-    {
-        // If it is a big value, push it up
-        // (Heap[parent(pos)])
-        while ((pos > 0) && (pool.getIndex(pos)[0] > (pool.getIndex(parent(
-            pos))[0])))
-        {
-            swap(pos, parent(pos));
-            pos = parent(pos);
-        }
-        siftdown(pos); // If it is little, push down
-    }
-    // Return current size of the heap
     private int heapsize()
     {
         return n;
@@ -214,28 +184,76 @@ public class HeapSort
         return 2 * pos + 1;
     }
 
+//// Return position for right child of pos
+// private int rightchild(int pos)
+// {
+// System.out.println(pos + " >= " + (n - 1) / 2);
+// if (pos >= (n - 1) / 2)
+// {
+// return -1;
+// }
+// return 2 * pos + 2;
+// }
+//
+//
+//// Return position for parent
+// private int parent(int pos)
+// {
+// if (pos <= 0)
+// {
+// return -1;
+// }
+// return (pos - 1) / 2;
 
-    // Return position for right child of pos
-    private int rightchild(int pos)
-    {
-        System.out.println(pos + " >= " + (n - 1) / 2);
-        if (pos >= (n - 1) / 2)
-        {
-            return -1;
-        }
-        return 2 * pos + 2;
-    }
-
-
-    // Return position for parent
-    private int parent(int pos)
-    {
-        if (pos <= 0)
-        {
-            return -1;
-        }
-        return (pos - 1) / 2;
-    }
+// // Remove and return element at specified position
+// private short[] remove(int pos) throws IOException
+// {
+// if ((pos < 0) || (pos >= n))
+// {
+// return new short[]
+// { -1, 0 };
+// } // Illegal heap position
+// if (pos == (n - 1))
+// {
+// n--;
+// } // Last element, no work to be done
+// else
+// {
+// swap(pos, --n); // Swap with last value
+// update(pos);
+// }
+// return pool.getIndex(n);
+// }
+//
+//
+// // Modify the value at the given position
+// private void modify(int pos, int newVal) throws IOException
+// {
+// if ((pos < 0) || (pos >= n))
+// {
+// return;
+// } // Illegal heap position
+// // Heap[pos] = newVal;
+// update(pos);
+// }
+//
+//
+// // The value at pos has been changed, restore the heap property
+// private void update(int pos) throws IOException
+// {
+// // If it is a big value, push it up
+// // (Heap[parent(pos)])
+// while ((pos > 0) && (pool.getIndex(pos)[0] > (pool.getIndex(parent(
+// pos))[0])))
+// {
+// swap(pos, parent(pos));
+// pos = parent(pos);
+// }
+// siftdown(pos); // If it is little, push down
+// }
+//
+//
+// // Return current size of the heap
 
 // // Insert val into heap
 // private void insert(int key)
@@ -254,7 +272,5 @@ public class HeapSort
 // curr = parent(curr);
 // }
 // }
-
-
 
 }

@@ -1,3 +1,5 @@
+import java.io.PrintWriter;
+
 /**
  * Class that calculated cache hits & misses,
  * disk reads & writes, and time.
@@ -5,6 +7,8 @@
  * @author William Lummus (williamnl)
  * @version 2022.19.2022
  */
+
+// !Question! how do i save the file?
 public class StatsOutput {
 
     private String name;
@@ -155,6 +159,8 @@ public class StatsOutput {
         output += "Disk Reads: " + reads + "\n";
         output += "Disk Writes: " + writes + "\n";
         output += "Time to Sort: " + time;
+        
+
         return output;
     }
 
